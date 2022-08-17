@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  golang:
+    image: golang:1.18
+    command: bash -c "go run main.go"
+    working_dir: /app
+    volumes:
+      - ./main.go:/app/main.go
+    ports:
+      - "8080:8080"
