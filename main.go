@@ -1,11 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -50,24 +53,6 @@ func clearScreen() {
 	cmd.Run()
 }
 
-func startingMonitoring() {
-	clearScreen()
-	fmt.Println("\nIniciando monitoramento...")
-
-	sites := []string{"https://www.aurino.dev"}
-
-	for i := 0; i < CICLES; i++ {
-		for _, site := range sites {
-			fmt.Println("\nAcessando site:", site)
-
-			statusMessage := executeRequest(site)
-			fmt.Println(statusMessage)
-		}
-
-		time.Sleep(DELAY * time.Second)
-	}
-}
-
 func executeRequest(site string) string {
 	resp, err := http.Get(site)
 
@@ -80,4 +65,45 @@ func executeRequest(site string) string {
 	}
 
 	return "Site " + site + " está com problemas. status code:" + strconv.Itoa(resp.StatusCode)
+}
+
+func readSiteInFile() []string {
+	var sites []string
+
+	arquivo, err := os.Open("sites.txt")
+
+	if err != nil {
+		fmt.Println("Ocorreu um erro:", err)
+	}
+
+	leitor := bufio.NewReader(arquivo)
+	for {
+		linha, err := leitor.ReadString('\n')
+
+		linha = strings.TrimSpace(linha)
+		sites = append(sites, linha)
+
+		if err == io.EOF {
+			break
+		}
+	}
+	return sites
+}
+
+func startingMonitoring() {
+	clearScreen()
+	fmt.Println("\nIniciando monitoramento...")
+
+	sites := readSiteInFile()
+
+	for i := 0; i < CICLES; i++ {
+		for _, site := range sites {
+			fmt.Println("\nAcessando site:", site)
+
+			statusMessage := executeRequest(site)
+			fmt.Println(statusMessage)
+		}
+
+		time.Sleep(DELAY * time.Second)
+	}
 }
