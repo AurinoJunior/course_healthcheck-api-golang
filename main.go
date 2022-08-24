@@ -21,30 +21,8 @@ func main() {
 	fmt.Println("Este programa está na versão:", VERSION)
 	fmt.Println("Salve salve Aurigod")
 
-	for {
-		showMenu()
-
-		var comando int
-		fmt.Scan(&comando) // & serve para acessar o endereço de memoria.
-
-		switch comando {
-		case 1:
-			startingMonitoring()
-		case 2:
-			fmt.Println("\nExibindo logs...")
-		case 0:
-			fmt.Println("\nSaindo...")
-			os.Exit(0)
-		default:
-			fmt.Println("\nNão reconheço este comando.")
-		}
-	}
-}
-
-func showMenu() {
-	fmt.Println("\n1- Iniciar Monitoramento")
-	fmt.Println("2- Exibir Logs")
-	fmt.Println("0- Sair do Programa")
+	startingMonitoring()
+	os.Exit(0)
 }
 
 func clearScreen() {
